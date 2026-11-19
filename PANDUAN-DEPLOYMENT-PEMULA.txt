@@ -1,0 +1,100 @@
+PANDUAN DEPLOYMENT PEMULA — APLIKASI UJIAN BERSAMA V3.1
+===========================================================
+
+STATUS SAAT INI
+Aplikasi sudah disiapkan sebagai PWA (web app yang dapat dipasang di HP).
+Aplikasi BELUM online dan belum memiliki alamat publik karena sekolah belum
+memiliki hosting/domain. File ZIP ini tidak dapat membuat server publik sendiri.
+Untuk menerbitkan link, sekolah harus memiliki hosting dan domain terlebih dahulu.
+
+A. SPESIFIKASI HOSTING YANG PERLU DIBELI
+- Hosting Linux dengan cPanel atau panel setara.
+- PHP 8.1+.
+- MySQL 5.7+ atau MariaDB 10.4+.
+- Ekstensi PHP PDO dan PDO MySQL aktif.
+- SSL/HTTPS gratis (Let's Encrypt) dan dapat diaktifkan.
+- Ruang awal minimal 1 GB disarankan; kapasitas dan CPU/RAM perlu disesuaikan
+  dengan jumlah siswa yang ujian bersamaan.
+- Backup database otomatis dan dukungan teknis.
+- Untuk ujian serentak skala besar, jangan memilih paket termurah tanpa uji beban.
+
+B. DOMAIN
+Pilih domain yang mudah diingat, misalnya:
+  ujian.namasekolah.sch.id
+atau
+  ujian.namasekolah.id
+Ketersediaan dan syarat pendaftaran domain harus diperiksa kepada registrar.
+Domain .sch.id memiliki persyaratan dokumen khusus. Domain .id juga mengikuti
+ketentuan registrar. Jangan membeli sebelum nama dan dokumen sekolah dipastikan.
+
+C. LANGKAH SETELAH HOSTING/DOMAIN AKTIF
+1. Hubungkan domain ke hosting melalui nameserver/DNS yang diberikan penyedia.
+2. Aktifkan SSL/HTTPS pada panel hosting. Tunggu sampai https://domain-sekolah
+   dapat dibuka tanpa peringatan sertifikat.
+3. Buat database MySQL, user database, dan berikan ALL PRIVILEGES ke database itu.
+4. Buka phpMyAdmin, pilih database baru, lalu Import database.sql.
+5. Ekstrak ZIP ini di komputer. Unggah ISI folder Aplikasi_Ujian_Bersama_V2
+   ke document root domain/subdomain. Pastikan index.php langsung berada di
+   document root, bukan di folder bertingkat yang tidak diinginkan.
+6. Salin config.example.php menjadi config.php. Isi db_host, db_name, db_user,
+   db_pass sesuai informasi hosting. Jangan mengubah session_secure menjadi false
+   untuk produksi. Zona waktu default Asia/Makassar.
+7. Buka https://DOMAIN-SEKOLAH/ dan pastikan halaman login muncul.
+8. Buat password hash admin melalui PHP CLI atau file sementara yang langsung
+   dihapus setelah dipakai:
+       <?php echo password_hash('PASSWORD-KUAT-ANDA', PASSWORD_DEFAULT);
+   Masukkan admin melalui phpMyAdmin:
+       INSERT INTO users(name,username,password_hash,role,active)
+       VALUES('Administrator','admin','HASH_HASIL_GENERATE','admin',1);
+   Gunakan password unik minimal 10 karakter. Jangan mengirim password ke chat.
+9. Login sebagai admin, ubah password bila perlu, buat akun guru, pengawas,
+   dan siswa, kemudian buat mata pelajaran, ujian, serta soal.
+10. Bagikan link HTTPS yang sama. Siswa login sebagai siswa; admin/guru/proktor
+    login dengan akun sesuai peran. Menu otomatis menyesuaikan peran.
+
+D. PEMASANGAN DI HP
+ANDROID:
+- Kirim link HTTPS kepada siswa.
+- Buka link menggunakan Chrome.
+- Pilih menu ⋮ > Install app / Tambahkan ke layar utama.
+IPHONE:
+- Buka link menggunakan Safari (bukan browser dalam aplikasi pesan).
+- Tekan Bagikan > Add to Home Screen / Tambahkan ke Layar Utama.
+- Konfirmasi Add/Tambahkan.
+Admin, guru, dan proktor dapat memakai link yang sama di HP maupun komputer.
+
+E. UJI WAJIB SEBELUM UJIAN RESMI
+[ ] Login admin, guru, pengawas, dan siswa.
+[ ] Pastikan siswa hanya melihat ujian untuk kelasnya.
+[ ] Uji ujian dummy dengan 5-10 soal pilihan ganda dan esai.
+[ ] Uji simpan jawaban, refresh halaman, dan login kembali.
+[ ] Uji timer habis dan tombol kirim ujian.
+[ ] Uji koreksi esai dan rekap nilai.
+[ ] Uji monitoring proktor dari perangkat lain.
+[ ] Uji Android dan iPhone secara nyata.
+[ ] Uji 10-20 akun serentak sebagai pilot; naikkan bertahap.
+[ ] Backup dan uji pemulihan database.
+[ ] Pastikan HTTPS aktif dan file config.php tidak dapat diunduh.
+
+F. BATASAN PENTING
+- PWA bukan aplikasi native yang diterbitkan di Play Store/App Store. Instalasi
+  dilakukan melalui link HTTPS. Publikasi toko aplikasi adalah pekerjaan terpisah.
+- Aplikasi memerlukan internet aktif untuk login, mengunduh soal, dan mengirim
+  jawaban. Ini bukan ujian offline penuh.
+- PWA tidak mengunci perangkat dan tidak menggantikan Safe Exam Browser.
+- Belum dilakukan uji beban pada server sekolah karena hosting belum tersedia.
+  Jangan gunakan untuk ujian resmi berskala besar sebelum uji pilot dan audit.
+- Pastikan jadwal ujian menggunakan zona waktu Asia/Makassar (WITA).
+- Simpan backup database sebelum dan sesudah setiap periode ujian.
+
+G. INFORMASI YANG DIBUTUHKAN UNTUK TAHAP DEPLOYMENT
+Setelah hosting dibeli, siapkan:
+1. Nama domain/subdomain.
+2. Nama penyedia hosting dan akses panel (jangan kirim password).
+3. Detail database: host, nama database, username database. Password cukup
+   dimasukkan sendiri ke config.php di hosting.
+4. Perkiraan jumlah siswa yang akan ujian pada waktu bersamaan.
+
+Jangan pernah mengirimkan password hosting, password database, atau password
+admin melalui percakapan. Saya dapat memandu langkah demi langkah berdasarkan
+tampilan panel yang Anda lihat.
